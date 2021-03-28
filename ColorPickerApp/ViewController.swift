@@ -24,9 +24,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // Color View
-        colorView.layer.borderWidth = 1
-        colorView.layer.borderColor = UIColor.systemGray3.cgColor
         colorView.layer.cornerRadius = 10
+        colorView.layer.shadowColor = UIColor.black.cgColor
+        colorView.layer.shadowOpacity = 0.13
+        colorView.layer.shadowOffset = .zero
+        colorView.layer.shadowRadius = 8
         
         // Label Values
         redLabel.text = String(format: "%.2f", redSlider.value)
