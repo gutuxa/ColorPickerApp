@@ -1,0 +1,175 @@
+//
+//  SettingsViewController.swift
+//  ColorPickerApp
+//
+//  Created by Oksana Tugusheva on 26.03.2021.
+//
+
+import UIKit
+
+enum Color {
+    case red, green, blue
+}
+
+class SettingsViewController: UIViewController {
+    
+    @IBOutlet var redLabel: UILabel!
+    @IBOutlet var greenLabel: UILabel!
+    @IBOutlet var blueLabel: UILabel!
+    
+    @IBOutlet var redSlider: UISlider!
+    @IBOutlet var greenSlider: UISlider!
+    @IBOutlet var blueSlider: UISlider!
+    
+    @IBOutlet var redTF: UITextField!
+    @IBOutlet var greenTF: UITextField!
+    @IBOutlet var blueTF: UITextField!
+    
+    @IBOutlet var colorView: UIView! {
+        didSet {
+            colorView.layer.cornerRadius = 10
+            colorView.layer.shadowColor = UIColor.black.cgColor
+            colorView.layer.shadowOpacity = 0.13
+            colorView.layer.shadowOffset = .zero
+            colorView.layer.shadowRadius = 8
+        }
+    }
+    
+    @IBOutlet var doneButton: UIButton! {
+        didSet {
+            doneButton.layer.cornerRadius = 8
+        }
+    }
+    
+    var color: UIColor!
+    var delegate: ColorDelegate!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        redTF.delegate = self
+        greenTF.delegate = self
+        blueTF.delegate = self
+        
+        setupUI()
+    }
+
+    @IBAction func sliderChanged(_ sender: UISlider) {
+        switch sender {
+        case redSlider:
+            setColor(red: sender.value)
+            setValues(for: .red)
+        case greenSlider:
+            setColor(green: sender.value)
+            setValues(for: .green)
+        default:
+            setColor(blue: sender.value)
+            setValues(for: .blue)
+        }
+        
+        applyColor()
+    }
+    
+    @IBAction func doneButtonPressed() {
+        view.endEditing(true)
+        delegate.setColor(with: color)
+        dismiss(animated: true)
+    }
+}
+
+// MARK: - Private Methods
+extension SettingsViewController {
+    private func setupUI() {
+        setValues(for: .red, .green, .blue)
+        applyColor()
+    }
+    
+    private func getRGB() -> (red: Float, green: Float, blue: Float) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        return (red: Float(red), green: Float(green), blue: Float(blue))
+    }
+    
+    private func setColor(red: Float? = nil, green: Float? = nil, blue: Float? = nil) {
+        color = UIColor(
+            red: CGFloat(red ?? redSlider.value),
+            green: CGFloat(green ?? greenSlider.value),
+            blue: CGFloat(blue ?? blueSlider.value),
+            alpha: 1
+        )
+    }
+    
+    private func applyColor() {
+        colorView.backgroundColor = color
+    }
+    
+    private func setValues(for colors: Color...) {
+        for color in colors {
+            switch color {
+            case .red:
+                let red = getRGB().red
+                redSlider.setValue(red, animated: false)
+                redLabel.text = string(for: red)
+                redTF.text = string(for: red)
+            case .green:
+                let green = getRGB().green
+                greenSlider.setValue(green, animated: false)
+                greenLabel.text = string(for: green)
+                greenTF.text = string(for: green)
+            case .blue:
+                let blue = getRGB().blue
+                blueSlider.setValue(blue, animated: false)
+                blueLabel.text = string(for: blue)
+                blueTF.text = string(for: blue)
+            }
+        }
+    }
+    
+    private func string(for number: Float) -> String {
+        String(format: "%.2f", number)
+    }
+}
+
+// MARK: - TextField Methods
+extension SettingsViewController: UITextFieldDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super .touchesBegan(touches, with: event)
+        view.endEditing(true)
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        guard let value = Float(textField.text ?? ""), value >= 0 && value <= 1 else {
+            switch textField {
+            case redTF: setValues(for: .red)
+            case greenTF: setValues(for: .green)
+            default: setValues(for: .blue)
+            }
+            return
+        }
+        
+        switch textField {
+        case redTF:
+            setColor(red: value)
+            setValues(for: .red)
+        case greenTF:
+            setColor(green: value)
+            setValues(for: .green)
+        default:
+            setColor(blue: value)
+            setValues(for: .blue)
+        }
+        
+        applyColor()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+        return true
+    }
+}
+

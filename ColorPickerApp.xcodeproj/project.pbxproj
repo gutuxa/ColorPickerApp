@@ -9,21 +9,23 @@
 /* Begin PBXBuildFile section */
 		B37E1F87260E266200AA0977 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1F86260E266200AA0977 /* AppDelegate.swift */; };
 		B37E1F89260E266200AA0977 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1F88260E266200AA0977 /* SceneDelegate.swift */; };
-		B37E1F8B260E266200AA0977 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1F8A260E266200AA0977 /* ViewController.swift */; };
+		B37E1F8B260E266200AA0977 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1F8A260E266200AA0977 /* SettingsViewController.swift */; };
 		B37E1F8E260E266200AA0977 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B37E1F8C260E266200AA0977 /* Main.storyboard */; };
 		B37E1F90260E266800AA0977 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B37E1F8F260E266800AA0977 /* Assets.xcassets */; };
 		B37E1F93260E266800AA0977 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B37E1F91260E266800AA0977 /* LaunchScreen.storyboard */; };
+		B3A8D42D2620D9C400F24BDD /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8D42C2620D9C400F24BDD /* EntryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B37E1F83260E266200AA0977 /* ColorPickerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorPickerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B37E1F86260E266200AA0977 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B37E1F88260E266200AA0977 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B37E1F8A260E266200AA0977 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B37E1F8A260E266200AA0977 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B37E1F8D260E266200AA0977 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B37E1F8F260E266800AA0977 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B37E1F92260E266800AA0977 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B37E1F94260E266800AA0977 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B3A8D42C2620D9C400F24BDD /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +58,48 @@
 		B37E1F85260E266200AA0977 /* ColorPickerApp */ = {
 			isa = PBXGroup;
 			children = (
-				B37E1F86260E266200AA0977 /* AppDelegate.swift */,
-				B37E1F88260E266200AA0977 /* SceneDelegate.swift */,
-				B37E1F8A260E266200AA0977 /* ViewController.swift */,
-				B37E1F8C260E266200AA0977 /* Main.storyboard */,
-				B37E1F8F260E266800AA0977 /* Assets.xcassets */,
-				B37E1F91260E266800AA0977 /* LaunchScreen.storyboard */,
-				B37E1F94260E266800AA0977 /* Info.plist */,
+				B3A8D4272620D8D800F24BDD /* Supporting */,
+				B3A8D4292620D8E300F24BDD /* ViewControllers */,
+				B3A8D4242620D88B00F24BDD /* Storyboards */,
+				B3A8D4262620D8C300F24BDD /* Resources */,
 			);
 			path = ColorPickerApp;
+			sourceTree = "<group>";
+		};
+		B3A8D4242620D88B00F24BDD /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				B37E1F91260E266800AA0977 /* LaunchScreen.storyboard */,
+				B37E1F8C260E266200AA0977 /* Main.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		B3A8D4262620D8C300F24BDD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B37E1F8F260E266800AA0977 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B3A8D4272620D8D800F24BDD /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				B37E1F86260E266200AA0977 /* AppDelegate.swift */,
+				B37E1F88260E266200AA0977 /* SceneDelegate.swift */,
+				B37E1F94260E266800AA0977 /* Info.plist */,
+			);
+			path = Supporting;
+			sourceTree = "<group>";
+		};
+		B3A8D4292620D8E300F24BDD /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B37E1F8A260E266200AA0977 /* SettingsViewController.swift */,
+				B3A8D42C2620D9C400F24BDD /* EntryViewController.swift */,
+			);
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,7 +172,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B37E1F8B260E266200AA0977 /* ViewController.swift in Sources */,
+				B37E1F8B260E266200AA0977 /* SettingsViewController.swift in Sources */,
+				B3A8D42D2620D9C400F24BDD /* EntryViewController.swift in Sources */,
 				B37E1F87260E266200AA0977 /* AppDelegate.swift in Sources */,
 				B37E1F89260E266200AA0977 /* SceneDelegate.swift in Sources */,
 			);
@@ -288,7 +324,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = ColorPickerApp/Info.plist;
+				INFOPLIST_FILE = ColorPickerApp/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -308,7 +344,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = ColorPickerApp/Info.plist;
+				INFOPLIST_FILE = ColorPickerApp/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
