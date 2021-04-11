@@ -144,11 +144,8 @@ extension SettingsViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard let value = Float(textField.text ?? ""), value >= 0 && value <= 1 else {
-            switch textField {
-            case redTF: setValues(for: .red)
-            case greenTF: setValues(for: .green)
-            default: setValues(for: .blue)
-            }
+            showErrorAlert(for: textField)
+            restoreValue(for: textField)
             return
         }
         
@@ -167,6 +164,31 @@ extension SettingsViewController: UITextFieldDelegate {
         applyColor()
     }
     
+    private func showErrorAlert(for textField: UITextField) {
+        let alert = UIAlertController(
+            title: "Invalid value",
+            message: "Please enter number beetwen 0 and 1",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(
+            title: "Ok",
+            style: .default,
+            handler: { _ in textField.becomeFirstResponder() }
+        )
+        
+        alert.addAction(okAction)
+        present(alert, animated: true)
+    }
+    
+    private func restoreValue(for textField: UITextField) {
+        switch textField {
+        case redTF: setValues(for: .red)
+        case greenTF: setValues(for: .green)
+        default: setValues(for: .blue)
+        }
+    }
+    
     private func setupTextFields() {
         for textField in [redTF, greenTF, blueTF] {
             guard let textField = textField else { return }
@@ -179,14 +201,7 @@ extension SettingsViewController: UITextFieldDelegate {
     private func setupDecimalKeyboard(for textField: UITextField) {
         textField.keyboardType = .decimalPad
         
-        let toolbar = UIToolbar(
-            frame: CGRect.init(
-                x: 0,
-                y: 0,
-                width: UIScreen.main.bounds.width,
-                height: 44
-            )
-        )
+        let toolbar = UIToolbar()
         
         let flexibleSpace = UIBarButtonItem(
             barButtonSystemItem: .flexibleSpace,
@@ -201,6 +216,7 @@ extension SettingsViewController: UITextFieldDelegate {
         )
         
         toolbar.items = [flexibleSpace, doneButton]
+        toolbar.sizeToFit()
         textField.inputAccessoryView = toolbar
     }
     
