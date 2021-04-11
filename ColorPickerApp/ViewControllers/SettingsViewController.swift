@@ -46,12 +46,8 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        redTF.delegate = self
-        greenTF.delegate = self
-        blueTF.delegate = self
-        
         setupUI()
+        setupTextFields()
     }
 
     @IBAction func sliderChanged(_ sender: UISlider) {
@@ -109,20 +105,19 @@ extension SettingsViewController {
     }
     
     private func setValues(for colors: Color...) {
+        let (red, green, blue) = getRGB()
+        
         for color in colors {
             switch color {
             case .red:
-                let red = getRGB().red
                 redSlider.setValue(red, animated: false)
                 redLabel.text = string(for: red)
                 redTF.text = string(for: red)
             case .green:
-                let green = getRGB().green
                 greenSlider.setValue(green, animated: false)
                 greenLabel.text = string(for: green)
                 greenTF.text = string(for: green)
             case .blue:
-                let blue = getRGB().blue
                 blueSlider.setValue(blue, animated: false)
                 blueLabel.text = string(for: blue)
                 blueTF.text = string(for: blue)
@@ -140,6 +135,11 @@ extension SettingsViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super .touchesBegan(touches, with: event)
         view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+        return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -167,9 +167,45 @@ extension SettingsViewController: UITextFieldDelegate {
         applyColor()
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    private func setupTextFields() {
+        for textField in [redTF, greenTF, blueTF] {
+            guard let textField = textField else { return }
+            
+            textField.delegate = self
+            setupDecimalKeyboard(for: textField)
+        }
+    }
+    
+    private func setupDecimalKeyboard(for textField: UITextField) {
+        textField.keyboardType = .decimalPad
+        
+        let toolbar = UIToolbar(
+            frame: CGRect.init(
+                x: 0,
+                y: 0,
+                width: UIScreen.main.bounds.width,
+                height: 44
+            )
+        )
+        
+        let flexibleSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        
+        let doneButton = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: nil,
+            action: #selector(keyboardDoneButtonPressed)
+        )
+        
+        toolbar.items = [flexibleSpace, doneButton]
+        textField.inputAccessoryView = toolbar
+    }
+    
+    @objc private func keyboardDoneButtonPressed() {
         view.endEditing(true)
-        return true
     }
 }
 
