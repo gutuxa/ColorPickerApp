@@ -7,10 +7,6 @@
 
 import UIKit
 
-enum Color {
-    case red, green, blue
-}
-
 class SettingsViewController: UIViewController {
     
     @IBOutlet var redLabel: UILabel!
@@ -46,23 +42,31 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        setupTextFields()
+        
+        redTF.delegate = self
+        greenTF.delegate = self
+        blueTF.delegate = self
+        
+        setSliders()
+        setValue(for: redLabel, greenLabel, blueLabel)
+        setValue(for: redTF, greenTF, blueTF)
+        applyColor()
     }
 
     @IBAction func sliderChanged(_ sender: UISlider) {
         switch sender {
         case redSlider:
-            setColor(red: sender.value)
-            setValues(for: .red)
+            setValue(for: redLabel)
+            setValue(for: redTF)
         case greenSlider:
-            setColor(green: sender.value)
-            setValues(for: .green)
+            setValue(for: greenLabel)
+            setValue(for: greenTF)
         default:
-            setColor(blue: sender.value)
-            setValues(for: .blue)
+            setValue(for: blueLabel)
+            setValue(for: blueTF)
         }
         
+        setColor()
         applyColor()
     }
     
@@ -75,27 +79,11 @@ class SettingsViewController: UIViewController {
 
 // MARK: - Private Methods
 extension SettingsViewController {
-    private func setupUI() {
-        setValues(for: .red, .green, .blue)
-        applyColor()
-    }
-    
-    private func getRGB() -> (red: Float, green: Float, blue: Float) {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        
-        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
-        return (red: Float(red), green: Float(green), blue: Float(blue))
-    }
-    
-    private func setColor(red: Float? = nil, green: Float? = nil, blue: Float? = nil) {
+    private func setColor() {
         color = UIColor(
-            red: CGFloat(red ?? redSlider.value),
-            green: CGFloat(green ?? greenSlider.value),
-            blue: CGFloat(blue ?? blueSlider.value),
+            red: CGFloat(redSlider.value),
+            green: CGFloat(greenSlider.value),
+            blue: CGFloat(blueSlider.value),
             alpha: 1
         )
     }
@@ -104,64 +92,36 @@ extension SettingsViewController {
         colorView.backgroundColor = color
     }
     
-    private func setValues(for colors: Color...) {
-        let (red, green, blue) = getRGB()
+    private func setSliders() {
+        let ciColor = CIColor(color: color)
         
-        for color in colors {
-            switch color {
-            case .red:
-                redSlider.setValue(red, animated: false)
-                redLabel.text = string(for: red)
-                redTF.text = string(for: red)
-            case .green:
-                greenSlider.setValue(green, animated: false)
-                greenLabel.text = string(for: green)
-                greenTF.text = string(for: green)
-            case .blue:
-                blueSlider.setValue(blue, animated: false)
-                blueLabel.text = string(for: blue)
-                blueTF.text = string(for: blue)
+        redSlider.value = Float(ciColor.red)
+        greenSlider.value = Float(ciColor.green)
+        blueSlider.value = Float(ciColor.blue)
+    }
+    
+    private func setValue(for labels: UILabel...) {
+        for label in labels {
+            switch label {
+            case redLabel: label.text = string(from: redSlider)
+            case greenLabel: label.text = string(from: greenSlider)
+            default: label.text = string(from: blueSlider)
             }
         }
     }
     
-    private func string(for number: Float) -> String {
-        String(format: "%.2f", number)
-    }
-}
-
-// MARK: - TextField Methods
-extension SettingsViewController: UITextFieldDelegate {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super .touchesBegan(touches, with: event)
-        view.endEditing(true)
+    private func setValue(for textFields: UITextField...) {
+        for textField in textFields {
+            switch textField {
+            case redTF: textField.text = string(from: redSlider)
+            case greenTF: textField.text = string(from: greenSlider)
+            default: textField.text = string(from: blueSlider)
+            }
+        }
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        view.endEditing(true)
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        guard let value = Float(textField.text ?? ""), value >= 0 && value <= 1 else {
-            showErrorAlert(for: textField)
-            restoreValue(for: textField)
-            return
-        }
-        
-        switch textField {
-        case redTF:
-            setColor(red: value)
-            setValues(for: .red)
-        case greenTF:
-            setColor(green: value)
-            setValues(for: .green)
-        default:
-            setColor(blue: value)
-            setValues(for: .blue)
-        }
-        
-        applyColor()
+    private func string(from slider: UISlider) -> String {
+        String(format: "%.2f", slider.value)
     }
     
     private func showErrorAlert(for textField: UITextField) {
@@ -180,28 +140,49 @@ extension SettingsViewController: UITextFieldDelegate {
         alert.addAction(okAction)
         present(alert, animated: true)
     }
-    
-    private func restoreValue(for textField: UITextField) {
-        switch textField {
-        case redTF: setValues(for: .red)
-        case greenTF: setValues(for: .green)
-        default: setValues(for: .blue)
-        }
+}
+
+// MARK: - TextField Methods
+extension SettingsViewController: UITextFieldDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super .touchesBegan(touches, with: event)
+        view.endEditing(true)
     }
     
-    private func setupTextFields() {
-        for textField in [redTF, greenTF, blueTF] {
-            guard let textField = textField else { return }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        guard let value = Float(textField.text ?? ""), value >= 0 && value <= 1 else {
+            showErrorAlert(for: textField)
             
-            textField.delegate = self
-            setupDecimalKeyboard(for: textField)
+            switch textField {
+            case redTF: setValue(for: redTF)
+            case greenTF: setValue(for: greenTF)
+            default: setValue(for: blueTF)
+            }
+            
+            return
         }
+        
+        switch textField {
+        case redTF:
+            redSlider.setValue(value, animated: true)
+            setValue(for: redLabel)
+        case greenTF:
+            greenSlider.setValue(value, animated: true)
+            setValue(for: greenLabel)
+        default:
+            blueSlider.setValue(value, animated: true)
+            setValue(for: blueLabel)
+        }
+        
+        setColor()
+        applyColor()
     }
     
-    private func setupDecimalKeyboard(for textField: UITextField) {
-        textField.keyboardType = .decimalPad
-        
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         let toolbar = UIToolbar()
+        
+        toolbar.sizeToFit()
+        textField.inputAccessoryView = toolbar
         
         let flexibleSpace = UIBarButtonItem(
             barButtonSystemItem: .flexibleSpace,
@@ -211,13 +192,11 @@ extension SettingsViewController: UITextFieldDelegate {
         
         let doneButton = UIBarButtonItem(
             barButtonSystemItem: .done,
-            target: nil,
+            target: self,
             action: #selector(keyboardDoneButtonPressed)
         )
         
         toolbar.items = [flexibleSpace, doneButton]
-        toolbar.sizeToFit()
-        textField.inputAccessoryView = toolbar
     }
     
     @objc private func keyboardDoneButtonPressed() {
